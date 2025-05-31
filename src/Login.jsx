@@ -1,76 +1,90 @@
-import {
-  Container,
-  Typography,
-  TextField,
-  InputLabel,
-  MenuItem,
-  FormControl,
-  Select,
-} from "@mui/material";
-import { auth, provider, facebookProvider, signInWithPopup } from "./firebase";
+import { Container, Typography, Stack, TextField, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
+import { auth, googleProvider, facebookProvider, signInWithPopup } from "./firebase";
 import { useState } from "react";
+import GoogleIcon from '@mui/icons-material/Google';
+import FacebookIcon from '@mui/icons-material/Facebook';
 
 const Login = ({ setUser }) => {
+  const [loading, setLoading] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [loginOption, setLoginOption] = useState("");
+  const [providerSelected, setProviderSelected] = useState(false);
+  const [selectedProvider, setSelectedProvider] = useState("");
 
-  const handleLogin = async (selectedProvider) => {
+  const handleLogin = async (provider) => {
+    setProviderSelected(true); // Hide dropdown after selection
+    setLoading(true);
     try {
-      let result;
-      if (selectedProvider === "google") {
-        provider.setCustomParameters({ prompt: "select_account" });
-        result = await signInWithPopup(auth, provider);
-      } else if (selectedProvider === "facebook") {
-        result = await signInWithPopup(auth, facebookProvider);
+      if (provider === "google") {
+        googleProvider.setCustomParameters({ prompt: "select_account" });
+        const result = await signInWithPopup(auth, googleProvider);
+        setUser(result.user);
+      } else if (provider === "facebook") {
+        const result = await signInWithPopup(auth, facebookProvider);
+        setUser(result.user);
       }
-      setUser(result.user);
     } catch (error) {
-      alert("Login Error: " + error.message);
+      if (error.code === "auth/popup-closed-by-user") {
+        // Optionally, show a friendlier message or do nothing
+        // alert("You closed the popup before logging in.");
+      } else {
+        alert("Login Error: " + error.message);
+      }
       console.error("Login Error:", error);
+      setProviderSelected(false); // Allow retry if error
+      setSelectedProvider("");    // Reset dropdown
+    } finally {
+      setLoading(false);
     }
+  };
+
+  const handleSelectChange = (e) => {
+    const value = e.target.value;
+    setSelectedProvider(value);
+    handleLogin(value);
   };
 
   return (
     <Container maxWidth="sm" sx={{ mt: 10, textAlign: "center" }}>
       <Typography variant="h4" gutterBottom>
-        Login
+        Welcome Back
       </Typography>
-
-      <TextField
-        fullWidth
-        label="Username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        margin="normal"
-      />
-
-      <TextField
-        fullWidth
-        label="Password"
-        type="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        margin="normal"
-      />
-
-      <FormControl fullWidth margin="normal">
-        <InputLabel id="login-option-label">Continue with</InputLabel>
-        <Select
-          labelId="login-option-label"
-          value={loginOption}
-          onChange={(e) => {
-            setLoginOption(e.target.value);
-            if (e.target.value) {
-              handleLogin(e.target.value);
-            }
-          }}
-          label="Continue with"
-        >
-          <MenuItem value="google">Google</MenuItem>
-          <MenuItem value="facebook">Facebook</MenuItem>
-        </Select>
-      </FormControl>
+      <Stack spacing={2} mt={4}>
+        <TextField
+          label="Username"
+          variant="outlined"
+          fullWidth
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <TextField
+          label="Password"
+          type="password"
+          variant="outlined"
+          fullWidth
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {!providerSelected && (
+          <FormControl fullWidth>
+            <InputLabel id="provider-label">Continue with</InputLabel>
+            <Select
+              labelId="provider-label"
+              label="Continue with"
+              disabled={loading}
+              value={selectedProvider}
+              onChange={handleSelectChange}
+            >
+              <MenuItem value="google">
+                <GoogleIcon sx={{ mr: 1 }} /> Google
+              </MenuItem>
+              <MenuItem value="facebook">
+                <FacebookIcon sx={{ mr: 1 }} /> Facebook
+              </MenuItem>
+            </Select>
+          </FormControl>
+        )}
+      </Stack>
     </Container>
   );
 };

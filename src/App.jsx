@@ -7,7 +7,11 @@ function App() {
 
   return (
     <>
-      {user ? <Home user={user} setUser={setUser} /> : <Login setUser={setUser} />}
+      {user ? (
+        <Home user={user} setUser={setUser} />
+      ) : (
+        <Login setUser={setUser} />
+      )}
     </>
   );
 }

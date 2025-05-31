@@ -1,8 +1,6 @@
-// src/firebase.js
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 
-// Paste your Firebase config here
 const firebaseConfig = {
   apiKey: "AIzaSyC6dwvyZ3ZZnqqJoYpNOiPbrpWBZQhrQvE",
   authDomain: "login-app-434e2.firebaseapp.com",
@@ -15,8 +13,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
 
-export { auth, provider, facebookProvider, signInWithPopup, signOut };
-
+export { auth, googleProvider, facebookProvider, signInWithPopup, signOut };
