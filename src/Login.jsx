@@ -1,5 +1,4 @@
 import {
-  Button,
   Container,
   Typography,
   TextField,
@@ -8,7 +7,7 @@ import {
   FormControl,
   Select,
 } from "@mui/material";
-import { auth, provider, signInWithPopup } from "./firebase";
+import { auth, provider, facebookProvider, signInWithPopup } from "./firebase";
 import { useState } from "react";
 
 const Login = ({ setUser }) => {
@@ -16,12 +15,18 @@ const Login = ({ setUser }) => {
   const [password, setPassword] = useState("");
   const [loginOption, setLoginOption] = useState("");
 
-  const handleLoginWithGoogle = async () => {
+  const handleLogin = async (selectedProvider) => {
     try {
-       provider.setCustomParameters({ prompt: "select_account" });
-      const result = await signInWithPopup(auth, provider);
+      let result;
+      if (selectedProvider === "google") {
+        provider.setCustomParameters({ prompt: "select_account" });
+        result = await signInWithPopup(auth, provider);
+      } else if (selectedProvider === "facebook") {
+        result = await signInWithPopup(auth, facebookProvider);
+      }
       setUser(result.user);
     } catch (error) {
+      alert("Login Error: " + error.message);
       console.error("Login Error:", error);
     }
   };
@@ -32,7 +37,6 @@ const Login = ({ setUser }) => {
         Login
       </Typography>
 
-      {/* Username Field */}
       <TextField
         fullWidth
         label="Username"
@@ -41,7 +45,6 @@ const Login = ({ setUser }) => {
         margin="normal"
       />
 
-      {/* Password Field */}
       <TextField
         fullWidth
         label="Password"
@@ -51,7 +54,6 @@ const Login = ({ setUser }) => {
         margin="normal"
       />
 
-      {/* Dropdown to continue with Google */}
       <FormControl fullWidth margin="normal">
         <InputLabel id="login-option-label">Continue with</InputLabel>
         <Select
@@ -59,13 +61,14 @@ const Login = ({ setUser }) => {
           value={loginOption}
           onChange={(e) => {
             setLoginOption(e.target.value);
-            if (e.target.value === "google") {
-              handleLoginWithGoogle();
+            if (e.target.value) {
+              handleLogin(e.target.value);
             }
           }}
           label="Continue with"
         >
           <MenuItem value="google">Google</MenuItem>
+          <MenuItem value="facebook">Facebook</MenuItem>
         </Select>
       </FormControl>
     </Container>
