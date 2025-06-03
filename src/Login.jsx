@@ -46,7 +46,7 @@ const Login = ({ setUser }) => {
 
   return (
     <Container maxWidth="sm" sx={{ mt: 10, textAlign: "center" }}>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h6" gutterBottom>
         Welcome Back
       </Typography>
       <Stack spacing={2} mt={4}>

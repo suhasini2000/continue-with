@@ -66,3 +66,44 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+      }
+  .heading {
+        text-align: center;
+        margin-top: 32px;
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 24px;
+        color: #2222221d;
+      }
+      .panel-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 32px;
+        margin: 0 auto;
+        max-width: 1200px;
+      }
+      .panel {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        padding: 32px 24px;
+        min-width: 220px;
+        min-height: 400px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        /* Example: subtle blue for side panels */
+        background-color: #e3f0ff;
+      }
+      .panel.center {
+        flex: 2;
+        min-width: 400px;
+        /* Example: white for center panel */
+        background-color: #fff;
+      }

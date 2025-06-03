@@ -1,18 +1,23 @@
-import { useState } from "react";
 import Login from "./Login";
-import Home from "./Home";
+import AnimalGamePanel from "./AnimalGamePanel";
+import "./index.css";
 
 function App() {
-  const [user, setUser] = useState(null);
-
   return (
-    <>
-      {user ? (
-        <Home user={user} setUser={setUser} />
-      ) : (
-        <Login setUser={setUser} />
-      )}
-    </>
+    <div>
+      <h1 className="main-heading">GenInfotech</h1>
+      <div className="panel-container">
+        <div className="panel">
+          <Login />
+        </div>
+        <div className="panel center">
+          {/* Center panel content (optional) */}
+        </div>
+        <div className="panel">
+          <AnimalGamePanel />
+        </div>
+      </div>
+    </div>
   );
 }
 
